@@ -5,45 +5,69 @@ from src.logger.logging import logging
 import os
 import sys
 from sklearn.model_selection import train_test_split
+from pathlib import Path
+from src.utils.utils import save_object, evaluate_model
+
+from sklearn.linear_model import LinearRegression, Ridge,Lasso,ElasticNet
 
 from dataclasses import dataclass 
 
 @dataclass
-class DataIngestionConfig:
-    raw_data = os.path.join("artifacts", "raw_data")
-    train_data = os.path.join("artifacts", "train_data")
-    test_data = os.path.join("artifacts", "test_data")
+class ModelTrainingConfig:
+    trained_model_path= os.path.join("artifacts", "model.pkl")
+    
 
-class DataIngestion:
+class ModelTraining:
     def __init__(self):
-        self.data_path = DataIngestionConfig()
+        self.model_path = ModelTrainingConfig()
 
 
-    def initiate_data_ingestion():
-        logging.INFO("Data Ingestion Started")
+    def initiate_model_training(self, train_arr, test_arr):
+        logging.INFO("Setting Model Training")
 
         try:
-            logging.INFO("Loading dataset")
-            data = pd.read_csv("https://raw.githubusercontent.com/kejihela/End-to-End-MLOps/master/src/componets/train.csv")
-            os.path.makedirs(os.path.dirname(os.path.join(self.data_path.raw_data)),exist_ok=True)
+            logging.INFO("Train_test_split")
+            
+            X_train, y_train, X_test, y_test(train_arr[:,:-1],
+            train_arr[:,-1],
+            test_arr[:,:-1],
+            test_arr[:,-1])
 
-            data.to_csv(self.data_path.raw_data,index = False)
+            models = {
+            'LinearRegression':LinearRegression(),
+            'Lasso':Lasso(),
+            'Ridge':Ridge(),
+            'Elasticnet':ElasticNet()
+            }
 
-            logging.INFO("saving the raw dataset")
+            model_report:dict=evaluate_model(X_train,y_train,X_test,y_test,models)
+            print(model_report)
+            print('\n====================================================================================\n')
+            logging.info(f'Model Report : {model_report}')
 
-            logging.INFO("Splitting data into train and test set")
+            # To get best model score from dictionary 
+            best_model_score = max(sorted(model_report.values()))
 
-            train_data, test_data = train_test_split(data, test_size=0.3)
+            best_model_name = list(model_report.keys())[
+                list(model_report.values()).index(best_model_score)
+            ]
+            
+            best_model = models[best_model_name]
 
-            os.path.makedirs(os.path.dirname(self.data_path.train_data),exist_ok=True)
+            print(f'Best Model Found , Model Name : {best_model_name} , R2 Score : {best_model_score}')
+            print('\n====================================================================================\n')
+            logging.info(f'Best Model Found , Model Name : {best_model_name} , R2 Score : {best_model_score}')
 
-            train_data.to_csv(self.data_path.train_data, index = False)
-            logging.INFO("saving the training dataset")
+            save_object(
+                 file_path=self.model_trainer_config.trained_model_file_path,
+                 obj=best_model
+            )
+          
 
-            os.path.makedirs(os.path.dirname(self.data_path.test_data),exist_ok=True)
+        except Exception as e:
+            logging.info('Exception occured at Model Training')
+            raise customexception(e,sys)
 
-            test_data.to_csv(self.data_path.test_data, index = False)
-            logging.INFO("saving the test dataset")
 
             return (
                 self.data_path.train_data,
