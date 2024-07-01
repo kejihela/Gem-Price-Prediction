@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd 
-from src.exception.exception import customexception
-from src.logger.logging import logging 
+from exception.exception import customexception
+from logger.logging import logging 
 import os
 import sys
 from sklearn.model_selection import train_test_split
@@ -11,9 +11,8 @@ from pathlib import Path
 
 from sklearn.impute import SimpleImputer
 from sklearn.compose import ColumnTransformer
-from sklearn.pipeline import pipeline
 from sklearn.preprocessing import StandardScaler, OrdinalEncoder
-from sklearn.make_pipeline import pipeline
+from sklearn.pipeline import Pipeline
 from utils.utils import save_object
 
 @dataclass
@@ -25,8 +24,8 @@ class DataTransformation:
     def __init__(self):
         self.processor_path = DataTransformationConfig()
 
-    def get_data_preprocessor():
-        logging.INFO("Data Transformation Started")
+    def get_data_preprocessor(self):
+        logging.info("Data Transformation Started")
 
         try:
             
@@ -37,25 +36,25 @@ class DataTransformation:
             color_categories = ['D', 'E', 'F', 'G', 'H', 'I', 'J']
             clarity_categories = ['I1','SI2','SI1','VS2','VS1','VVS2','VVS1','IF']
 
-            logging.INFO("Initiating pipeline......")
+            logging.info("Initiating pipeline......")
 
 
-            numerical_pipeline = pipeline(
+            numerical_pipeline = Pipeline(
 
-                step = [("Imputer", SimpleImputer(strategy = 'median')),
+                steps = [("Imputer", SimpleImputer(strategy = 'median')),
                     ("Standard scaler", StandardScaler())]
             )
 
 
-            categorical_pipeline = pipeline(
+            categorical_pipeline = Pipeline(
 
-                step = [("Imputer", SimpleImputer(strategy="most_frequent")),
-                ("Encoding", OrdinalEncoder(categories=(" cut_categories", "color_categories","clarity_categories")))
+                steps = [("Imputer", SimpleImputer(strategy="most_frequent")),
+                ("Encoding", OrdinalEncoder(categories=[cut_categories, color_categories,clarity_categories])),
 
                     ("Standard scaler", StandardScaler())]
             )
 
-            preprocessing = ColumnTransformer(
+            preprocessor= ColumnTransformer(
                 [("num_column", numerical_pipeline, num_column),
                 ("cat_column", categorical_pipeline, cat_column)
 
@@ -65,38 +64,52 @@ class DataTransformation:
             return preprocessor
 
             
-    except Exception as e:
-        logging.INFO("Error preprocessing dataset dataset")
-        raise customexception(e, sys)
+        except Exception as e:
+            logging.info("Error preprocessing dataset dataset")
+            raise customexception(e, sys)
 
 
     def initiate_data_transformation(self, train_path, test_path):
-        logging.INFO("Initialiing data transformation...")
+        logging.info("Initialiing data transformation...")
 
         train_data = pd.read_csv(train_path)
         test_data = pd.read_csv(test_path)
 
-        preprocessor_obj = get_data_preprocessor()
+        logging.info("Inializing processor...")
+
+        preprocessor_obj = self.get_data_preprocessor()
 
         target = 'price'
 
         drop_features = ["id", target]
 
-        train_features = train_data.drop(drop_features, axis=1)
-        test_features = test_data.drop(drop_features, axis = 1)
+        logging.info("Dropping unwanted features...")
+
+        train_features = train_data.drop(columns=drop_features, axis=1)
+        test_features = test_data.drop(columns=drop_features, axis = 1)
 
         train_target = train_data[target]
         test_target = test_data[target]
 
+        logging.info("data transformation begin...")
 
-        training_data = np.c_[train_features, np.array(train_target)]
-        testing_data = np.c_[test_features, np.array(test_target)]
+        training_data =preprocessor_obj.fit_transform(train_features )
+        testing_data =preprocessor_obj.transform( test_features )
 
-        train_arr =preprocessor_obj.fit_transform(training_data)
-        test_arr =preprocessor_obj.transform(testing_data)
+        logging.info("data transformation end...")
+
+        logging.info("data transformation concatenation...")
+
+        train_arr = np.c_[training_data, np.array(train_target) ]
+        test_arr  = np.c_[testing_data, np.array(test_target)]
 
 
-        save_object(file_name= self.processor_path.processor_obj_path, obj= preprocessor_obj)
+       
+
+       
+
+        logging.info("Data transformed...")
+        save_object(file_path= self.processor_path.processor_obj_path, obj= preprocessor_obj)
 
 
         return ( train_arr, test_arr)

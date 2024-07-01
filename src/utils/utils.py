@@ -3,8 +3,8 @@ import sys
 import pickle
 import numpy as np
 import pandas as pd
-from src.logging.logging import logging
-from src.exception.exception import customexception
+from logger.logging import logging
+from exception.exception import customexception
 
 from sklearn.metrics import r2_score, mean_absolute_error,mean_squared_error
 
@@ -26,6 +26,7 @@ def evaluate_model(X_train,y_train,X_test,y_test,models):
         for i in range(len(models)):
             model = list(models.values())[i]
             # Train model
+            logging.info("Model fitting...")
             model.fit(X_train,y_train)
 
             
@@ -38,7 +39,7 @@ def evaluate_model(X_train,y_train,X_test,y_test,models):
             test_model_score = r2_score(y_test,y_test_pred)
 
             report[list(models.keys())[i]] =  test_model_score
-
+            logging.info("Return report...")
         return report
 
     except Exception as e:

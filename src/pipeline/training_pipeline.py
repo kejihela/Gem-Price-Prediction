@@ -1,10 +1,10 @@
-from src.components.data_ingestion import DataIngestion
-from src.components.data_transformtion import DataTransformation
-from src.components.model_trainer import ModelTraining
-from src.components.model_evaluation import model_evaluation
+from components.data_ingestion import DataIngestion
+from components.data_transformtion import DataTransformation
+from components.model_trainer import ModelTraining
+#from components.model_evaluation import model_evaluation
 
-from src.logger.logging import logging
-from src.exception.exception import customexception
+from logger.logging import logging
+from exception.exception import customexception
 import pandas as pd
 import numpy as np
 import os

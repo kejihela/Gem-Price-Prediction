@@ -1,12 +1,12 @@
 import numpy as np
 import pandas as pd 
-from src.exception.exception import customexception
-from src.logger.logging import logging 
+from exception.exception import customexception
+from logger.logging import logging 
 import os
 import sys
 from sklearn.model_selection import train_test_split
 from pathlib import Path
-from src.utils.utils import save_object, evaluate_model
+from utils.utils import save_object, evaluate_model
 
 from sklearn.linear_model import LinearRegression, Ridge,Lasso,ElasticNet
 
@@ -22,16 +22,18 @@ class ModelTraining:
         self.model_path = ModelTrainingConfig()
 
 
-    def initiate_model_training(self, train_arr, test_arr):
-        logging.INFO("Setting Model Training")
+    def initiate_model_training(self, train_array, test_array):
+        logging.info("Setting Model Training")
 
         try:
-            logging.INFO("Train_test_split")
+            logging.info("Train_test_split")
             
-            X_train, y_train, X_test, y_test(train_arr[:,:-1],
-            train_arr[:,-1],
-            test_arr[:,:-1],
-            test_arr[:,-1])
+            X_train, y_train, X_test, y_test = (
+                train_array[:,:-1],
+                train_array[:,-1],
+                test_array[:,:-1],
+                test_array[:,-1]
+            )
 
             models = {
             'LinearRegression':LinearRegression(),
@@ -59,7 +61,7 @@ class ModelTraining:
             logging.info(f'Best Model Found , Model Name : {best_model_name} , R2 Score : {best_model_score}')
 
             save_object(
-                 file_path=self.model_trainer_config.trained_model_file_path,
+                 file_path=self.model_path.trained_model_path,
                  obj=best_model
             )
           
@@ -76,9 +78,9 @@ class ModelTraining:
 
            
 
-    except Exception as e:
-        logging.INFO("Error loading dataset")
-        raise customexception(e, sys)
+        except Exception as e:
+            logging.info("Error loading dataset")
+            raise customexception(e, sys)
 
 
 if __name__ == "__main__":
