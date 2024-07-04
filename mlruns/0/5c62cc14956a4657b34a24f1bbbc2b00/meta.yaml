@@ -1,0 +1,15 @@
+artifact_uri: file:///home/kejihela/Gem-Price-Prediction/mlruns/0/5c62cc14956a4657b34a24f1bbbc2b00/artifacts
+end_time: 1720053121428
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: 5c62cc14956a4657b34a24f1bbbc2b00
+run_name: thoughtful-robin-869
+run_uuid: 5c62cc14956a4657b34a24f1bbbc2b00
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1720053121403
+status: 4
+tags: []
+user_id: kejihela

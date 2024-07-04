@@ -1,0 +1,15 @@
+artifact_uri: file:///home/kejihela/Gem-Price-Prediction/mlruns/0/f084ead3b9ea4007b5a39eb05ac18c1f/artifacts
+end_time: 1720053493182
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: f084ead3b9ea4007b5a39eb05ac18c1f
+run_name: rebellious-cub-32
+run_uuid: f084ead3b9ea4007b5a39eb05ac18c1f
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1720053489089
+status: 3
+tags: []
+user_id: kejihela
