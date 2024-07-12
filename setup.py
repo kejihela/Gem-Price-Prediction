@@ -16,7 +16,7 @@ def get_requirements(file_path:str)->List[str]:
 
 setup(
     name='PricePredictionForDiamond',
-    version='0.0.2',
+    version='0.0.3',
     author='Adebayo Abdulganiyu Keji',
     author_email='Gleebayour@gmail.com',
     install_requires=["scikit-learn","pandas","numpy"],

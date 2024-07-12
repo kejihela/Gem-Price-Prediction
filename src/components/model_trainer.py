@@ -81,9 +81,3 @@ class ModelTraining:
         except Exception as e:
             logging.info("Error loading dataset")
             raise customexception(e, sys)
-
-
-if __name__ == "__main__":
-    obj = DataIngestion()
-
-    obj.initiate_data_ingestion()
