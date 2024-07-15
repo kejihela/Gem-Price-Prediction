@@ -2,8 +2,7 @@ import pandas as pd
 import numpy as np
 import os
 from flask import Flask, request, render_template,jsonify
-from logger.logging import logging
-from pipeline.prediction_pipeline import ModelPredict, CustomData
+from pipelines.prediction_pipeline import ModelPredict, CustomData
 
 app=Flask(__name__)
 
